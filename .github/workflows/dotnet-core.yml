@@ -1,0 +1,51 @@
+name: .NET Core
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: |
+        dotnet build --configuration Release -r win-x64
+        dotnet build --configuration Release -r linux-x64
+        dotnet build --configuration Release -r osx-x64
+    - name: Publish
+      run: |
+        dotnet publish -c release -p:PublishSingleFile=true -p:PublishTrimmed=true -r win-x64
+        dotnet publish -c release -p:PublishSingleFile=true -p:PublishTrimmed=true -r linux-x64
+        dotnet publish -c release -p:PublishSingleFile=true -p:PublishTrimmed=true -r osx-x64
+    # - name: Test
+      # run: dotnet test --no-restore --verbosity normal
+    - name: Move win-x64 binary
+      run: mkdir -p win-x64 && mv -f ./BBDown/bin/Release/netcoreapp3.1/win-x64/publish/BBDown.exe ./win-x64/BBDown.exe
+    - uses: actions/upload-artifact@v2
+      with:
+        name: win-x64
+        path: ./win-x64/BBDown.exe
+    - name: Move linux-x64 binary
+      run: mkdir -p linux-x64 && mv -f ./BBDown/bin/Release/netcoreapp3.1/linux-x64/publish/BBDown ./linux-x64/BBDown
+    - uses: actions/upload-artifact@v2
+      with:
+        name: linux-x64
+        path: ./linux-x64/BBDown
+    - name: Move osx-x64 binary
+      run: mkdir -p osx-x64 && mv -f ./BBDown/bin/Release/netcoreapp3.1/osx-x64/publish/BBDown ./osx-x64/BBDown
+    - uses: actions/upload-artifact@v2
+      with:
+        name: osx-x64
+        path: ./osx-x64/BBDown
