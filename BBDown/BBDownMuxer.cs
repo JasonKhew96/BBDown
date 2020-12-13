@@ -54,8 +54,8 @@ namespace BBDown
                 inputArg.Append($" -i \"{videoPath}\" ");
             if (!string.IsNullOrEmpty(audioPath))
                 inputArg.Append($" -i \"{audioPath}\" ");
-            if (!string.IsNullOrEmpty(pic))
-                inputArg.Append($" -i \"{pic}\" ");
+            // if (!string.IsNullOrEmpty(pic))
+            //     inputArg.Append($" -i \"{pic}\" ");
             if (subs != null)
             {
                 for (int i = 0; i < subs.Count; i++)
@@ -64,8 +64,8 @@ namespace BBDown
                     metaArg.Append($" -metadata:s:s:{i} handler_name=\"{SubDescDic[subs[i].lan]}\" -metadata:s:s:{i} language={SubLangDic[subs[i].lan]} ");
                 }
             }
-            if (!string.IsNullOrEmpty(pic))
-                metaArg.Append(" -disposition:v:1 attached_pic ");
+            // if (!string.IsNullOrEmpty(pic))
+            //     metaArg.Append(" -disposition:v:1 attached_pic ");
             var inputCount = Regex.Matches(inputArg.ToString(), "-i \"").Count;
             for (int i = 0; i < inputCount; i++)
             {
@@ -73,10 +73,16 @@ namespace BBDown
             }
 
             //----分析完毕
+            // var arguments = $"-loglevel warning -y " +
+            //      inputArg.ToString() + metaArg.ToString() + $" -metadata title=\"" + (episodeId == "" ? title : episodeId) + "\" " +
+            //      $"-metadata description=\"{desc}\" " +
+            //      (episodeId == "" ? "" : $"-metadata album=\"{title}\" ") +
+            //      (audioOnly ? " -vn " : "") + (videoOnly ? " -an " : "") +
+            //      $"-c copy " +
+            //      (subs != null ? " -c:s mov_text " : "") +
+            //      $"\"{outPath}\"";
             var arguments = $"-loglevel warning -y " +
-                 inputArg.ToString() + metaArg.ToString() + $" -metadata title=\"" + (episodeId == "" ? title : episodeId) + "\" " +
-                 $"-metadata description=\"{desc}\" " +
-                 (episodeId == "" ? "" : $"-metadata album=\"{title}\" ") +
+                 inputArg.ToString() + metaArg.ToString() + 
                  (audioOnly ? " -vn " : "") + (videoOnly ? " -an " : "") +
                  $"-c copy " +
                  (subs != null ? " -c:s mov_text " : "") +
